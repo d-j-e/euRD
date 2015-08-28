@@ -5,16 +5,12 @@ finalFilter.py
 Copyright (c) 2015, David Edwards, Bernie Pope, Kat Holt
 All rights reserved. (see README.txt for more details)
 
-removes heterozygote calls fron a vcf, also keeping count of the het SNPs removed. 
-output to _q30.vcf file and het count file
-
-If HetsVCF is set to 'True', the heterozygous SNP calls will be written to a VCF
 
 example: 
 python finalFilter.py <raw>.vfc <q30>.vcf <outHetFile> <HetsVCF>
 
 Created:	24/01/2013
-Modified:	07/01/2015
+Modified:	28/08/2015
 author: David Edwards
 '''
 import sys
@@ -43,13 +39,14 @@ for line in vcfIn:
         if HetsVCF:
         	hetVcfOut.write(line)
     else:
-        element = line.split("\t")        
-        if (element[7].find("AF1=1") != -1 or element[-1].startswith("0") != True) and element[4].find(",") == -1:
+        element = line.split("\t")
+
+        if len(element[4].split(",")) <= 2:
             vcfOut.write(line)    
         elif element[7].startswith("IND") != True:
             hetCount += 1
             if HetsVCF:
-            	hetVcfOut.write(line)
+               hetVcfOut.write(line)
 
 hetOut.write(str(hetCount))
 hetOut.close()

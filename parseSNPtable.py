@@ -48,6 +48,7 @@ python parseSNPtable.py -s snps.csv -p prefix -r genbank -q queryseq -m aln,codi
 #    07/10/14 - added filtering for core SNPs as specified by Gene Coverage table from RedDog
 #    08/03/15 - fixed reported position of SNP in non-coding feature
 #    22/05/15 - changed way variable snps are assessed during reading in snp table
+#    28/08/15 - changed to include het calls
 
 import os, sys, subprocess, string, re, random
 import collections
@@ -116,9 +117,94 @@ if __name__ == "__main__":
 
 	(options, args) = main()
 	nt = ["A","C","G","T"]
+	ambiguous = ["M","R","W","Y","S","K"]
+	
+	ntA = ["M","R","W"]
+	notA = ["Y","S","K"]
+	
+	ntC = ["M","Y","S"]
+	notC = ["R","W","K"]
+	
+	ntG = ["K","R","S"]
+	notG = ["M","W","Y"]
+
+	ntT = ["K","Y","W"]
+	notT = ["M","R","S"]
+
+	notM = ["K"]
+	notR = ["Y"]
+	notY = ["R"]
+	notK = ["M"]
+	notW = ["S"]
+	notS = ["W"]
 
 	def isVariable(snp_calls):
-		return (len(set(snp_calls.upper()).intersection(nt)) > 1)
+		if len(set(snp_calls.upper()).intersection(nt)) > 1:
+			return True
+		elif len(set(snp_calls.upper()).intersection(nt)) == 1:
+			ref = ''
+			for call in snp_calls:
+				if call.upper() in nt:
+					ref = call.upper()
+					break
+			if ref == "A": 
+				if len(set(snp_calls.upper()).intersection(notA)) > 1:
+					return True
+				else:
+					return False
+			elif ref == "C":
+				if len(set(snp_calls.upper()).intersection(notC)) > 1:
+					return True
+				else:
+					return False
+ 			elif ref == "G": 
+ 				if len(set(snp_calls.upper()).intersection(notG)) > 1:
+					return True
+				else:
+					return False
+			elif ref == "T":
+				if len(set(snp_calls.upper()).intersection(notT)) > 1:
+					return True
+				else:
+					return False
+		else:
+			ref = ''
+			for call in snp_calls:
+				if call.upper() in ambiguous:
+					ref = call.upper()
+					break
+			if ref == "M": 
+				if len(set(snp_calls.upper()).intersection(notM)) > 1:
+					return True
+				else:
+					return False
+			elif ref == "R":
+				if len(set(snp_calls.upper()).intersection(notR)) > 1:
+					return True
+				else:
+					return False
+			elif ref == "W":
+				if len(set(snp_calls.upper()).intersection(notW)) > 1:
+					return True
+				else:
+					return False
+			elif ref == "Y":
+				if len(set(snp_calls.upper()).intersection(notY)) > 1:
+					return True
+				else:
+					return False
+			elif ref == "S":
+				if len(set(snp_calls.upper()).intersection(notS)) > 1:
+					return True
+				else:
+					return False
+			elif ref == "K":
+				if len(set(snp_calls.upper()).intersection(notK)) > 1:
+					return True
+				else:
+					return False
+			else:
+				return False
 
 	# read csv; return as dictionary of dictionaries and list of strains
 	def readSNPTable(infile,outgroup_list,strain_list_file,pre):

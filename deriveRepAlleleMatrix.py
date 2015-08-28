@@ -18,7 +18,7 @@ example:
 python deriveRepAlleleMatrix.py <SNPList> <output> <reference.fa> <replicon> <isolate_consensus_seq> <replicon_RepStats.txt> <merge_prefix>
 
 Created:	26/2/2014
-Modified:	08/07/2014
+Modified:	28/08/2015
 author: David Edwards
 '''
 from Bio import SeqIO
@@ -77,7 +77,7 @@ for sample in statsFile:
                         if int(SNP[call][0]) <= len(record.seq):
                             base = record.seq[int(SNP[call][0])-1]
                             qualityCall = record.letter_annotations["phred_quality"][int(SNP[call][0])-1]
-                            if qualityCall >= 20 and (base in ['G', 'C', 'A', 'T']):
+                            if qualityCall >= 20 and (base.upper() in ['G','C','A','T','M','R','W','Y','S','K']):
                                 SNP[call].append(base.upper())
                             else:
                                 SNP[call].append('-')
