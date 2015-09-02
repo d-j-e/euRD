@@ -10,7 +10,7 @@ example:
 python finalFilter.py <raw>.vfc <q30>.vcf <outHetFile> <HetsVCF>
 
 Created:	24/01/2013
-Modified:	28/08/2015
+Modified:	02/09/2015
 author: David Edwards
 '''
 import sys
@@ -40,13 +40,13 @@ for line in vcfIn:
         	hetVcfOut.write(line)
     else:
         element = line.split("\t")
-
-        if len(element[4].split(",")) <= 2:
-            vcfOut.write(line)    
-        elif element[7].startswith("IND") != True:
-            hetCount += 1
-            if HetsVCF:
-               hetVcfOut.write(line)
+        if element[5] >= 30:       
+            if len(element[4].split(",")) <= 2:
+                vcfOut.write(line)    
+            elif element[7].startswith("IND") != True:
+                hetCount += 1
+                if HetsVCF:
+                    hetVcfOut.write(line)
 
 hetOut.write(str(hetCount))
 hetOut.close()
